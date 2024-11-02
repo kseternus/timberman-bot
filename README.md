@@ -1,18 +1,39 @@
-![ezgif com-video-to-gif-converter(3)](https://github.com/user-attachments/assets/a86e3316-94c6-4c23-b7ce-1f3f4d67991b)<br />
-<br />
-The script used ImageGrab (PIL is now only used for screenshot comparisons), but unfortunately the speed of cutting trees<br />
-was too slow due to the delay during screenshot taking. ImageGrab was replaced with mss which significantly sped up<br />
-the program. The program works by initially taking two screenshots on the left and right side of the tree above the player<br />
-for further comparison.<br />
-<br />
-![20241023161907_1](https://github.com/user-attachments/assets/8bad5268-d387-4b6c-92a8-5c28f32fd811)<br />
-<br />
-After running the script, the user starts the game, pressing the 's' button, the script starts, the above-mentioned screenshots<br />
-are taken. The program constantly presses the left arrow cutting trees while taking a screenshot of the left area comparing<br />
-it with the base area. If it detects a change (branch), it changes the flag for cutting trees on the left to False and moves<br />
-to the right, continuing the principle of operation on the right side. By pressing the 'q' button we stop the script.<br />
-We can run it again by pressing 's', thus taking new base screenshots.<br />
-<br />
-Update:<br />
-Changed some speed of cutting and area of screenshots<br />
-Highest score i managed to get was 11516<br />
+# Timberman Bot
+
+Timberman Bot is an automation script for the popular Timberman game that leverages screen capture and keyboard simulation to automate gameplay. 
+
+![ezgif com-video-to-gif-converter(4)](https://github.com/user-attachments/assets/325a24d8-9287-4c2a-a50b-0dbffd92ba5c)
+
+## Features
+
+- **Game Mode Selection**: 
+  - Choose between solo or multiplayer modes: two, four or eight players
+- **Dynamic Screen Capture**: 
+  - Continuously monitors the game screen for changes in specified areas.
+- **Automated Keyboard Input**: 
+  - Uses the `keyboard` library to simulate keystrokes based on screen analysis, allowing for real-time gameplay responses.
+
+## Technical Details
+
+- **Main Libraries Used**:
+  - `mss`: For efficient screen capturing.
+  - `keyboard`: For simulating user input.
+  - `winsound`: For playing sounds based on game events.
+  - `pygetwindow`: To handle window operations.
+  - `PIL (Pillow)`: For image processing tasks.
+
+- **How It Works**:
+  - The script captures a specific portion of the screen and analyzes pixel colors to detect game elements.
+  - Based on the analysis, it triggers keyboard events to simulate actions.
+  - The loop runs until manually stopped, allowing continuous gameplay automation.
+ 
+- **How To Run**
+  - Run script
+  - Select game mode; solo or multiplayer
+  - Start game then play selected mode
+  - When in game click `s` to make stript take reference screenshots and start playing game
+  - Click `q` to stop script
+  - Every new game user need to stop and start script by clicking `q` and `s` to make new reference screenshots
+
+
+Highest score made by this bot is 11516
