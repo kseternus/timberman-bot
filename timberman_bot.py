@@ -6,80 +6,78 @@ import pygetwindow
 from PIL import Image, ImageChops
 
 
-def main_loop():
-    running = False  # Flag to control the execution of the while loop
-    flag_left = True  # Flag to know if whether we ignore the branches on the left or right side
-    print("Press 's' to start the loop and 'q' to stop.")
-    active_window = pygetwindow.getActiveWindow()  # Ensure we screenshot game window not IDE or wallpaper
+def capture_region(sct, region):
+    """Captures a specified region of the screen and returns it as a PIL Image."""
+    screenshot = sct.grab(region)
+    return Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
 
-    # Frequency is in Hertz (Hz), Duration is in milliseconds (ms)
-    frequency = 1000  # Frequency of the beep (1000 Hz)
-    frequency2 = 2000  # Frequency of the beep (2000 Hz)
-    duration = 500  # Duration of the beep (500 ms)
+
+def compare_regions(region1, region2):
+    """Compares two images and returns True if a difference is detected."""
+    return ImageChops.difference(region1, region2).getbbox() is not None
+
+
+def beep(frequency, duration):
+    """Plays a beep sound with given frequency and duration."""
+    winsound.Beep(frequency, duration)
+
+
+def main_loop():
+    print("Press 's' to start the loop and 'q' to stop.")
+    active_window = pygetwindow.getActiveWindow()  # Ensure screenshot is for the active game window
+    running = False  # Flag to control the execution of the while loop
+    flag_left = True  # Determines if we focus on branches on the left or right side
+
+    # Beep parameters
+    start_beep = (1000, 500)  # Frequency (Hz) and duration (ms) for start beep
+    stop_beep = (2000, 500)   # Frequency (Hz) and duration (ms) for stop beep
+
+    # Screen regions to capture
+    solo_left = {'top': 710, 'left': 1120, 'width': 5, 'height': 120}
+    solo_right = {'top': 710, 'left': 1430, 'width': 5, 'height': 120}
+
+    # Multiplayer coordinates (uncomment if needed)
+    # multi_left = {'top': 710, 'left': 610, 'width': 5, 'height': 120}
+    # multi_right = {'top': 710, 'left': 910, 'width': 5, 'height': 120}
 
     with mss.mss() as sct:
+
         while True:
-            # Check if 's' is pressed to start the loop
+            # Start the loop if 's' is pressed and it's not running
             if keyboard.is_pressed('s') and not running:
                 if active_window:
-                    # Initial background screenshots (outside the loop)
-                    # These coordinates are for 2500x1600 resolution
-                    # Capture a region of the screen as a starting point for comparison
-                    # solo
-                    pixel_left = sct.grab({'top': 710, 'left': 1120, 'width': 5, 'height': 120})
-                    # multiplayer 2
-                    # pixel_left = sct.grab({'top': 710, 'left': 610, 'width': 5, 'height': 120})
-                    pixel_left = Image.frombytes('RGB', pixel_left.size, pixel_left.bgra, 'raw',
-                                                 'BGRX')
-                    # solo
-                    pixel_right = sct.grab({'top': 710, 'left': 1430, 'width': 5, 'height': 120})
-                    # multiplayer 2
-                    # pixel_right = sct.grab({'top': 710, 'left': 910, 'width': 5, 'height': 120})
-                    pixel_right = Image.frombytes('RGB', pixel_right.size, pixel_right.bgra, 'raw',
-                                                  'BGRX')
+                    # Initial reference screenshots for comparison
+                    pixel_left = capture_region(sct, solo_left)
+                    pixel_right = capture_region(sct, solo_right)
+
                 running = True
                 print("Loop started... Press 'q' to stop.")
-                # Play beep to inform about start
-                winsound.Beep(frequency, duration)
+                beep(*start_beep)
 
-            # If the loop is running, execute the main logic
-            if running:
+            # Main loop logic
+            while running:
                 if flag_left:
-                    # Continuously click the left key
                     keyboard.send('left')
                     time.sleep(0.06)
-                    # Capture screen area for comparison
-                    # solo
-                    branch_left = sct.grab({'top': 710, 'left': 1120, 'width': 5, 'height': 120})
-                    # multiplayer 2
-                    # branch_left = sct.grab({'top': 710, 'left': 610, 'width': 5, 'height': 120})
-                    branch_left = Image.frombytes('RGB', branch_left.size, branch_left.bgra, 'raw',
-                                                  'BGRX')
-                    # If a difference is detected, switch to the right
-                    if ImageChops.difference(branch_left, pixel_left).getbbox():
-                        flag_left = False
+                    branch_left = capture_region(sct, solo_left)
 
+                    # Switch direction if a change is detected on the left side
+                    if compare_regions(branch_left, pixel_left):
+                        flag_left = False
                 else:
-                    # Continuously click the right key
                     keyboard.send('right')
                     time.sleep(0.06)
-                    # Capture screen area for comparison
-                    # solo
-                    branch_right = sct.grab({'top': 710, 'left': 1430, 'width': 5, 'height': 120})
-                    # multiplayer 2
-                    # branch_right = sct.grab({'top': 710, 'left': 910, 'width': 5, 'height': 120})
-                    branch_right = Image.frombytes('RGB', branch_right.size, branch_right.bgra, 'raw',
-                                                   'BGRX')
-                    # If a difference is detected, switch to the left
-                    if ImageChops.difference(branch_right, pixel_right).getbbox():
+                    branch_right = capture_region(sct, solo_right)
+
+                    # Switch direction if a change is detected on the right side
+                    if compare_regions(branch_right, pixel_right):
                         flag_left = True
 
-            # Check if 'q' is pressed to stop the loop
-            if keyboard.is_pressed('q') and running:
-                running = False
-                print("Loop stopped. Press 's' to start again.")
-                # Play beep to inform about stop
-                winsound.Beep(frequency2, duration)
+                # Stop the loop if 'q' is pressed
+                if keyboard.is_pressed('q'):
+                    running = False
+                    print("Loop stopped. Press 's' to start again.")
+                    beep(*stop_beep)
 
 
 if __name__ == '__main__':
