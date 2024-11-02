@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4422ed0-4a49-4291-a0fb-b85ad917d1dd" name="Changes" comment="initial commit">
+    <list default="true" id="f4422ed0-4a49-4291-a0fb-b85ad917d1dd" name="Changes" comment="refactor and clean up code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timberman_bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/timberman_bot.py" afterDir="false" />
     </list>
@@ -105,11 +105,20 @@
       <option name="project" value="LOCAL" />
       <updated>1730459203434</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor and clean up code">
+      <option name="closed" value="true" />
+      <created>1730555153197</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1730555153197</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
+    <MESSAGE value="refactor and clean up code" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor and clean up code" />
   </component>
 </project>

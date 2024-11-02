@@ -7,78 +7,89 @@ from PIL import Image, ImageChops
 
 
 def capture_region(sct, region):
-    """Captures a specified region of the screen and returns it as a PIL Image."""
+    """Capture a specified region of the screen and return it as a PIL Image."""
     screenshot = sct.grab(region)
     return Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
 
 
-def compare_regions(region1, region2):
-    """Compares two images and returns True if a difference is detected."""
+def regions_differ(region1, region2):
+    """Return True if two images differ."""
     return ImageChops.difference(region1, region2).getbbox() is not None
 
 
-def beep(frequency, duration):
-    """Plays a beep sound with given frequency and duration."""
+def beep_sound(frequency, duration):
+    """Play a beep sound with given frequency and duration."""
     winsound.Beep(frequency, duration)
 
 
-def main_loop():
-    print("Press 's' to start the loop and 'q' to stop.")
-    active_window = pygetwindow.getActiveWindow()  # Ensure screenshot is for the active game window
-    running = False  # Flag to control the execution of the while loop
-    flag_left = True  # Determines if we focus on branches on the left or right side
+def get_game_settings():
+    """Prompt the user to select a game mode and return the screen capture settings."""
+    game_modes = {
+        1: ('Solo mode', 1120, 1430, 720, 5, 120),
+        2: ('Two players online mode', 610, 910, 720, 5, 120),
+        3: ('Four/Eight players online mode', 355, 525, 940, 5, 120)
+    }
 
-    # Beep parameters
-    start_beep = (1000, 500)  # Frequency (Hz) and duration (ms) for start beep
-    stop_beep = (2000, 500)   # Frequency (Hz) and duration (ms) for stop beep
+    while True:
+        try:
+            choice = int(input('Select game mode:\n'
+                               '1) Solo game\n'
+                               '2) Online two players mode\n'
+                               '3) Online four/eight players mode\n'
+                               ': '))
+            if choice in game_modes:
+                mode_name, x1, x2, y, width, height = game_modes[choice]
+                print(f'Selected {mode_name}')
+                return x1, x2, y, width, height
+            else:
+                print('Invalid choice. Please select 1, 2, or 3.')
+        except ValueError:
+            print('Invalid input. Please enter a number.')
 
-    # Screen regions to capture
-    solo_left = {'top': 710, 'left': 1120, 'width': 5, 'height': 120}
-    solo_right = {'top': 710, 'left': 1430, 'width': 5, 'height': 120}
 
-    # Multiplayer coordinates (uncomment if needed)
-    # multi_left = {'top': 710, 'left': 610, 'width': 5, 'height': 120}
-    # multi_right = {'top': 710, 'left': 910, 'width': 5, 'height': 120}
+def run_main_loop(x1, x2, y, width, height):
+    """Main loop that monitors screen regions and controls keyboard inputs."""
+    print("\nPress 's' to start the loop and 'q' to stop.")
+    active_window = pygetwindow.getActiveWindow()
+
+    running = False
+    direction_left = True
+
+    start_beep = (1000, 500)
+    stop_beep = (2000, 500)
+
+    regions = {
+        'left': {'top': y, 'left': x1, 'width': width, 'height': height},
+        'right': {'top': y, 'left': x2, 'width': width, 'height': height}
+    }
 
     with mss.mss() as sct:
-
         while True:
-            # Start the loop if 's' is pressed and it's not running
             if keyboard.is_pressed('s') and not running:
                 if active_window:
-                    # Initial reference screenshots for comparison
-                    pixel_left = capture_region(sct, solo_left)
-                    pixel_right = capture_region(sct, solo_right)
-
+                    reference_left = capture_region(sct, regions["left"])
+                    reference_right = capture_region(sct, regions["right"])
                 running = True
-                print("Loop started... Press 'q' to stop.")
-                beep(*start_beep)
+                print("\nLoop started... Press 'q' to stop.")
+                beep_sound(*start_beep)
 
-            # Main loop logic
             while running:
-                if flag_left:
-                    keyboard.send('left')
-                    time.sleep(0.06)
-                    branch_left = capture_region(sct, solo_left)
+                current_side = "left" if direction_left else "right"
+                keyboard.send(current_side)
+                time.sleep(0.06)
 
-                    # Switch direction if a change is detected on the left side
-                    if compare_regions(branch_left, pixel_left):
-                        flag_left = False
-                else:
-                    keyboard.send('right')
-                    time.sleep(0.06)
-                    branch_right = capture_region(sct, solo_right)
+                region_capture = capture_region(sct, regions[current_side])
+                reference_capture = reference_left if direction_left else reference_right
 
-                    # Switch direction if a change is detected on the right side
-                    if compare_regions(branch_right, pixel_right):
-                        flag_left = True
+                if regions_differ(region_capture, reference_capture):
+                    direction_left = not direction_left
 
-                # Stop the loop if 'q' is pressed
                 if keyboard.is_pressed('q'):
                     running = False
-                    print("Loop stopped. Press 's' to start again.")
-                    beep(*stop_beep)
+                    print("\nLoop stopped. Press 's' to start again.")
+                    beep_sound(*stop_beep)
 
 
 if __name__ == '__main__':
-    main_loop()
+    x1, x2, y, width, height = get_game_settings()
+    run_main_loop(x1, x2, y, width, height)
