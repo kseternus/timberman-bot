@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4422ed0-4a49-4291-a0fb-b85ad917d1dd" name="Changes" comment="refactor and clean up code">
+    <list default="true" id="f4422ed0-4a49-4291-a0fb-b85ad917d1dd" name="Changes" comment="add multiplayer options, refactor and clean up code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timberman_bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/timberman_bot.py" afterDir="false" />
     </list>
@@ -49,6 +49,7 @@
     &quot;Python.timberman_bot.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Python/bots_projects/timberman_bot&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
   }
 }</component>
@@ -113,12 +114,21 @@
       <option name="project" value="LOCAL" />
       <updated>1730555153197</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add multiplayer options, refactor and clean up code">
+      <option name="closed" value="true" />
+      <created>1730574726075</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1730574726075</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="refactor and clean up code" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor and clean up code" />
+    <MESSAGE value="add multiplayer options, refactor and clean up code" />
+    <option name="LAST_COMMIT_MESSAGE" value="add multiplayer options, refactor and clean up code" />
   </component>
 </project>

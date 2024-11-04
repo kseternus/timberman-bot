@@ -7,7 +7,8 @@ Timberman Bot is an automation script for the popular Timberman game that levera
 ## Features
 
 - **Game Mode Selection**: 
-  - Choose between solo or multiplayer modes: two, four or eight players
+  - Choose between solo or multiplayer modes: two, four or eight players.
+  - Choose between 1600p or 1080p.
 - **Dynamic Screen Capture**: 
   - Continuously monitors the game screen for changes in specified areas.
 - **Automated Keyboard Input**: 
@@ -15,7 +16,7 @@ Timberman Bot is an automation script for the popular Timberman game that levera
 
 ## Technical Details
 
-- **Main Libraries Used**:
+- **Main Libraries Used (Requirements)**:
   - `mss`: For efficient screen capturing.
   - `keyboard`: For simulating user input.
   - `winsound`: For playing sounds based on game events.
@@ -27,11 +28,18 @@ Timberman Bot is an automation script for the popular Timberman game that levera
   - Based on the analysis, it triggers keyboard events to simulate actions.
   - When branch appears above player it changes sides and continue, ignoring other side.
   - The loop runs until manually stopped, allowing continuous gameplay automation.
- 
+
+- **Installation**
+  - `pip install mss`
+  - `pip install keyboard`
+  - `pip install pygetwindow`
+  - `pip install Pillow`
+
 - **How To Run**
   - Run script
   - Select game mode; solo or multiplayer
+  - Select your resolution
   - Start game then play selected mode
-  - When in game click `s` to make stript take reference screenshots and start playing game
+  - When in game click `s` to make script take reference screenshots and start playing game
   - Click `q` to stop script
   - Every new game user need to stop and start script by clicking `q` and `s` to make new reference screenshots

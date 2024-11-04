@@ -23,31 +23,45 @@ def beep_sound(frequency, duration):
 
 
 def get_game_settings():
-    """Prompt the user to select a game mode and return the screen capture settings."""
+    """Prompt the user to select a game mode and resolution then return the screen capture settings."""
     game_modes = {
-        1: ('Solo mode', 1120, 1430, 720, 5, 120),
-        2: ('Two players online mode', 610, 910, 720, 5, 120),
-        3: ('Four/Eight players online mode', 355, 525, 940, 5, 120)
+        1: {'mode': 'Solo mode', '1600p': (1120, 1430, 720, 5, 120), '1080p': (850, 1060, 485, 5, 80)},
+        2: {'mode': 'Two players online mode', '1600p': (610, 910, 720, 5, 120), '1080p': (500, 710, 485, 5, 80)},
+        3: {'mode': 'Four/Eight players online mode', '1600p': (355, 525, 940, 5, 120), '1080p': (305, 425, 630, 5, 80)}
     }
 
     while True:
         try:
-            choice = int(input('Select game mode:\n'
-                               '1) Solo game\n'
-                               '2) Online two players mode\n'
-                               '3) Online four/eight players mode\n'
-                               ': '))
-            if choice in game_modes:
-                mode_name, x1, x2, y, width, height = game_modes[choice]
-                print(f'Selected {mode_name}')
-                return x1, x2, y, width, height
+            select_mode = int(input('Select game mode:\n'
+                                    '1) Solo game\n'
+                                    '2) Online two players mode\n'
+                                    '3) Online four/eight players mode\n'
+                                    ': '))
+            if select_mode in game_modes:
+                while True:
+                    resolution_choice = input('Select resolution:\n'
+                                              '1) 1600p\n'
+                                              '2) 1080p\n'
+                                              ': ').strip()
+                    if resolution_choice == '1':
+                        resolution = '1600p'
+                        break
+                    elif resolution_choice == '2':
+                        resolution = '1080p'
+                        break
+                    else:
+                        print('Invalid resolution choice. Please enter 1 or 2.')
+
+                settings = game_modes[select_mode][resolution]
+                print(f"Selected {game_modes[select_mode]['mode']} at {resolution}")
+                return settings
             else:
                 print('Invalid choice. Please select 1, 2, or 3.')
         except ValueError:
-            print('Invalid input. Please enter a number.')
+            print('Invalid input. Enter a number.')
 
 
-def run_main_loop(x1, x2, y, width, height):
+def main_loop(x1, x2, y, width, height):
     """Main loop that monitors screen regions and controls keyboard inputs."""
     print("\nPress 's' to start the loop and 'q' to stop.")
     active_window = pygetwindow.getActiveWindow()
@@ -67,14 +81,14 @@ def run_main_loop(x1, x2, y, width, height):
         while True:
             if keyboard.is_pressed('s') and not running:
                 if active_window:
-                    reference_left = capture_region(sct, regions["left"])
-                    reference_right = capture_region(sct, regions["right"])
+                    reference_left = capture_region(sct, regions['left'])
+                    reference_right = capture_region(sct, regions['right'])
                 running = True
                 print("\nLoop started... Press 'q' to stop.")
                 beep_sound(*start_beep)
 
             while running:
-                current_side = "left" if direction_left else "right"
+                current_side = 'left' if direction_left else 'right'
                 keyboard.send(current_side)
                 time.sleep(0.06)
 
@@ -92,4 +106,4 @@ def run_main_loop(x1, x2, y, width, height):
 
 if __name__ == '__main__':
     x1, x2, y, width, height = get_game_settings()
-    run_main_loop(x1, x2, y, width, height)
+    main_loop(x1, x2, y, width, height)
